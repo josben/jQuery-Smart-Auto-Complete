@@ -385,29 +385,21 @@
       $(this).data("smart-autocomplete", options);
 
       // bind user events
-      $(this).on("keydown", function(ev){
+      $(this).keyup(function(ev){
         //get the options
         var options = $(this).data("smart-autocomplete");
-
         //up arrow
-        if(ev.keyCode === 38){
-
-          if(options.resultsContainer){
-            var current_selection = options.currentSelection || 0;
-            var result_suggestions = $(options.resultsContainer).children();
-
-            if(current_selection > 0) {
-              $(options.context).trigger("itemUnfocus", result_suggestions[current_selection] );
-              current_selection--;
-            } else if((current_selection-1) < 0) {
-              $(options.context).trigger("itemUnfocus", result_suggestions[current_selection] );
-              current_selection = result_suggestions.length-1;
+        if(ev.keyCode == '38'){
+            if(options.resultsContainer){
+                var current_selection = options.currentSelection || 0;
+                var result_suggestions = $(options.resultsContainer).children();
+                if(current_selection >= 0)
+                    $(options.context).trigger('itemUnfocus', result_suggestions[current_selection] );
+                if(--current_selection <= 0)
+                    current_selection = 0;
+                options['currentSelection'] = current_selection;
+                $(options.context).trigger('itemFocus', [ result_suggestions[current_selection] ] );
             }
-
-            options.currentSelection = current_selection;
-
-            $(options.context).trigger("itemFocus", [ result_suggestions[current_selection] ] );
-          }
         }
 
         //down arrow
